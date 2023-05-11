@@ -5,22 +5,21 @@ import {
   Flex,
   Box,
   Text,
-  Grid,
-  Spinner,
-  Button,
-  SkeletonCircle,
-  SkeletonText,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
-
-import axios from "axios";
-import DoggoModal from "../Components/DoggoModal";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import doggo from "../Utils/doggo.png";
 import "../Styles/Homepage.css";
 import Loading from "../Components/Loader";
 
 const Homepage = () => {
   const [breeds, setBreeds] = useState([]);
-  const [selectedBreed, setSelectedBreed] = useState("");
+  const [selectBreed, setSelectBreed] = useState("");
   const [images, setImages] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -28,48 +27,52 @@ const Homepage = () => {
   const [count, setCount] = useState(0);
   const [liked, setLiked] = useState(false);
 
-  //Fetching list of breeds
-  //  const dogoBreeds=()=>{
-
-  //  }
-
-  useEffect(() => {
+  const dogoBreeds = async () => {
     setLoading(true);
-    axios
-      .get("https://dog.ceo/api/breeds/list/all")
-      .then((response) => {
-        setBreeds(Object.keys(response.data.message));
-        setLoading(false);
-      })
-
-      .catch((error) => console.log(error));
-  }, []);
-  console.log(breeds);
-
-  // Fetching breed images when breed is selected else random images will be display
-  useEffect(() => {
-    if (selectedBreed) {
-      setLoading(true);
-      axios
-        .get(`https://dog.ceo/api/breed/${selectedBreed}/images`)
-        .then((response) => {
-          setImages(response.data.message);
-          setLoading(false);
-        })
-        .catch((error) => console.log(error));
-    } else {
-      setLoading(true);
-      axios
-        .get("https://dog.ceo/api/breeds/image/random/30")
-        .then((response) => {
-          setImages(response.data.message);
-          setLoading(false);
-        })
-        .catch((error) => console.log(error));
+    try {
+      let res = await fetch("https://dog.ceo/api/breeds/list/all");
+      res = await res.json();
+      setBreeds(Object.keys(res.message));
+      console.log(res.message);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
     }
-  }, [selectedBreed]);
+  };
 
-  // like count
+  useEffect(() => {
+    dogoBreeds();
+  }, []);
+
+  const selectedBreedDog = async () => {
+    if (selectBreed) {
+      setLoading(true);
+      try {
+        let res = await fetch(
+          `https://dog.ceo/api/breed/${selectBreed}/images`
+        );
+        res = await res.json();
+        setImages(res.message);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        setLoading(true);
+        let res = await fetch(`https://dog.ceo/api/breeds/image/random/30`);
+        res = await res.json();
+        setImages(res.message);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    selectedBreedDog();
+  }, [selectBreed]);
 
   const handleClick = (index) => {
     if (liked) {
@@ -81,18 +84,15 @@ const Homepage = () => {
     }
   };
 
-  // Function to handle breed selection
   const handleBreedSelect = (breed) => {
-    setSelectedBreed(breed);
+    setSelectBreed(breed);
   };
 
-  // Handle image selection
   const handleImageSelect = (image) => {
     setSelectedImage(image);
     setShowModal(true);
   };
 
-  // Handle modal close
   const handleCloseModal = () => {
     setSelectedImage(null);
     setShowModal(false);
@@ -112,30 +112,31 @@ const Homepage = () => {
         overflowY="hidden"
         overflowX="scroll"
       >
-        {breeds.map((breed, index) => (
-          <Box
-            className="breeds"
-            fontFamily="Philosopher"
-            tabIndex={0}
-            onClick={() => handleBreedSelect(breed)}
-          >
-            <Text
-              width="185px"
-              height="100px"
-              color="white"
+        {breeds &&
+          breeds.map((breed, index) => (
+            <Box
+              className="breeds"
               fontFamily="Philosopher"
-              display={"flex"}
-              textAlign="center"
-              alignItems={"center"}
-              margin="auto"
+              tabIndex={0}
+              onClick={() => handleBreedSelect(breed)}
             >
-              <Image ml="-10px" w="80px" src={doggo} />
-              {breed.charAt(0).toUpperCase() + breed.slice(1)}
-            </Text>
-          </Box>
-        ))}
+              <Text
+                width="185px"
+                height="100px"
+                color="white"
+                fontFamily="Philosopher"
+                display={"flex"}
+                textAlign="center"
+                alignItems={"center"}
+                margin="auto"
+              >
+                <Image ml="-10px" w="80px" src={doggo} />
+                {breed.charAt(0).toUpperCase() + breed.slice(1)}
+              </Text>
+            </Box>
+          ))}
       </Flex>
-      {selectedBreed ? (
+      {selectBreed ? (
         <Text
           fontFamily="Philosopher"
           backgroundColor="#ff3e6c"
@@ -148,8 +149,8 @@ const Homepage = () => {
           fontSize={{ base: "xs", md: "md", lg: "lg" }}
           width={{ base: "90%", md: "50%", lg: "30%" }}
         >
-          {selectedBreed.charAt(0).toUpperCase() + selectedBreed.slice(1)}{" "}
-          Images: Click any one to view full image
+          {selectBreed.charAt(0).toUpperCase() + selectBreed.slice(1)} Images:
+          Click any one to view full image
         </Text>
       ) : (
         <Text
@@ -169,25 +170,6 @@ const Homepage = () => {
       {loading ? (
         <Loading />
       ) : (
-        // <Box
-        //   fontFamily="Philosopher"
-        //   display="flex"
-        //   justifyContent="center"
-        //   alignItems="center"
-        //   w="20%"
-        //   m="auto"
-        //   mt="5rem"
-        // >
-
-        //   <Spinner
-        //     m="auto"
-        //     thickness="4px"
-        //     speed="0.65s"
-        //     emptyColor="gray.200"
-        //     color="blue.500"
-        //     size="xl"
-        //   />
-        // </Box>
         <div className="dogo-gallery">
           {images.map((image, index) => (
             <Box
@@ -228,11 +210,35 @@ const Homepage = () => {
         </div>
       )}
       {selectedImage && (
-        <DoggoModal
+        <Modal
           isOpen={showModal}
           onClose={handleCloseModal}
-          image={selectedImage}
-        />
+          size={{ base: "sm", md: "lg" }}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader fontFamily="Philosopher">
+              Tap Or Scroll To Zoom
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody cursor="zoom-in">
+              <TransformWrapper>
+                <TransformComponent>
+                  <img
+                    src={selectedImage}
+                    alt="zoom"
+                    style={{
+                      width: "450px",
+                      height: "400px",
+                      border: "3px solid gray",
+                      borderRadius: "50px",
+                    }}
+                  />
+                </TransformComponent>
+              </TransformWrapper>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
       )}
     </>
   );

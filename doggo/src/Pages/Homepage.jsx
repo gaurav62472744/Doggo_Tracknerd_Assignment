@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import {
   Image,
-  Flex,
   Box,
   Text,
   Modal,
@@ -13,36 +12,18 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import doggo from "../Utils/doggo.png";
 import "../Styles/Homepage.css";
 import Loading from "../Components/Loader";
+import DogoBreed from "../Components/DogoBreed";
 
 const Homepage = () => {
-  const [breeds, setBreeds] = useState([]);
-  const [selectBreed, setSelectBreed] = useState("");
-  const [images, setImages] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [liked, setLiked] = useState(false);
-
-  const dogoBreeds = async () => {
-    setLoading(true);
-    try {
-      let res = await fetch("https://dog.ceo/api/breeds/list/all");
-      res = await res.json();
-      setBreeds(Object.keys(res.message));
-      console.log(res.message);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    dogoBreeds();
-  }, []);
+  const [selectBreed, setSelectBreed] = useState("");
+  const [dogImages, setDogImages] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedDogImage, setSelectedDogImage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const selectedBreedDog = async () => {
     if (selectBreed) {
@@ -52,7 +33,7 @@ const Homepage = () => {
           `https://dog.ceo/api/breed/${selectBreed}/images`
         );
         res = await res.json();
-        setImages(res.message);
+        setDogImages(res.message);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -62,7 +43,8 @@ const Homepage = () => {
         setLoading(true);
         let res = await fetch(`https://dog.ceo/api/breeds/image/random/30`);
         res = await res.json();
-        setImages(res.message);
+        console.log(res);
+        setDogImages(res.message);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -76,66 +58,33 @@ const Homepage = () => {
 
   const handleClick = (index) => {
     if (liked) {
-      setCount(count - 1);
-      setLiked(false);
-    } else {
       setCount(count + 1);
       setLiked(true);
+    } else {
+      setCount(count - 1);
+      setLiked(false);
     }
   };
 
-  const handleBreedSelect = (breed) => {
-    setSelectBreed(breed);
+  const handleSelectedDogBreed = (newBreed) => {
+    setSelectBreed(newBreed);
   };
 
-  const handleImageSelect = (image) => {
-    setSelectedImage(image);
-    setShowModal(true);
+  const handleSelectedDogImages = (newImage) => {
+    setSelectedDogImage(newImage);
+    setOpenModal(true);
   };
 
-  const handleCloseModal = () => {
-    setSelectedImage(null);
-    setShowModal(false);
+  const handleModal = () => {
+    setSelectedDogImage(null);
+    setOpenModal(false);
   };
 
   return (
     <>
-      <Flex
-        css={{
-          "&::-webkit-scrollbar": {
-            width: "0px",
-          },
-        }}
-        padding="4"
-        gap="10px"
-        fontFamily="Philosopher"
-        overflowY="hidden"
-        overflowX="scroll"
-      >
-        {breeds &&
-          breeds.map((breed, index) => (
-            <Box
-              className="breeds"
-              fontFamily="Philosopher"
-              tabIndex={0}
-              onClick={() => handleBreedSelect(breed)}
-            >
-              <Text
-                width="185px"
-                height="100px"
-                color="white"
-                fontFamily="Philosopher"
-                display={"flex"}
-                textAlign="center"
-                alignItems={"center"}
-                margin="auto"
-              >
-                <Image ml="-10px" w="80px" src={doggo} />
-                {breed.charAt(0).toUpperCase() + breed.slice(1)}
-              </Text>
-            </Box>
-          ))}
-      </Flex>
+      <Box className="breed-container" box-shadow="md">
+        <DogoBreed handleSelectedDogBreed={handleSelectedDogBreed} />
+      </Box>
       {selectBreed ? (
         <Text
           fontFamily="Philosopher"
@@ -149,8 +98,8 @@ const Homepage = () => {
           fontSize={{ base: "xs", md: "md", lg: "lg" }}
           width={{ base: "90%", md: "50%", lg: "30%" }}
         >
-          {selectBreed.charAt(0).toUpperCase() + selectBreed.slice(1)} Images:
-          Click any one to view full image
+          {selectBreed.charAt(0).toUpperCase() + selectBreed.slice(1)} Dogs
+          Images: Click any one to view full image
         </Text>
       ) : (
         <Text
@@ -160,7 +109,7 @@ const Homepage = () => {
           textAlign="center"
           backgroundColor="#ff3e6c"
           width={{ base: "70%", md: "30%", lg: "20%" }}
-          m="auto"
+          margin="auto"
           mb="16px"
         >
           Select Any Doggo Breed From Above
@@ -171,7 +120,7 @@ const Homepage = () => {
         <Loading />
       ) : (
         <div className="dogo-gallery">
-          {images.map((image, index) => (
+          {dogImages.map((newImage, index) => (
             <Box
               className="dogo-image"
               fontFamily="Philosopher"
@@ -180,15 +129,15 @@ const Homepage = () => {
               border={"2px solid black"}
             >
               <Image
-                w="95%"
-                onClick={() => handleImageSelect(image)}
-                h={"90%"}
+                width="94%"
+                onClick={() => handleSelectedDogImages(newImage)}
+                height={"90%"}
                 padding={"20px"}
                 marginTop={"10px"}
                 marginBottom={"10px"}
                 margin={"auto"}
                 key={index}
-                src={image}
+                src={newImage}
                 alt="dog"
               />
               <div
@@ -209,23 +158,23 @@ const Homepage = () => {
           ))}
         </div>
       )}
-      {selectedImage && (
+      {selectedDogImage && (
         <Modal
-          isOpen={showModal}
-          onClose={handleCloseModal}
+          isOpen={openModal}
+          onClose={handleModal}
           size={{ base: "sm", md: "lg" }}
         >
           <ModalOverlay />
           <ModalContent>
             <ModalHeader fontFamily="Philosopher">
-              Tap Or Scroll To Zoom
+              Tap Or Scroll To Zoom In and Zoom Out
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody cursor="zoom-in">
               <TransformWrapper>
                 <TransformComponent>
-                  <img
-                    src={selectedImage}
+                  <Image
+                    src={selectedDogImage}
                     alt="zoom"
                     style={{
                       width: "450px",

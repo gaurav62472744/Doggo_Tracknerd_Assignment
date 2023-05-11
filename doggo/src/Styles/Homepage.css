@@ -45,11 +45,11 @@
   align-items: center;
   background-color: #808080;
   border-radius: 20px;
-  box-shadow: md;
-  margin: 2px;
+  margin: 4px;
+  margin-top: 20px;
   width: 200px;
   cursor: pointer;
-  padding: 20px;
+  padding: 15px;
   transition: all 0.4s ease-in-out;
 }
 
@@ -60,4 +60,16 @@
 .breeds:focus {
   box-shadow: 0 0 1px 5px rgba(0, 0, 0, 0.75), 0 1px 1px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.2s ease-out;
+}
+
+.breed-container {
+  padding: 4px;
+  gap: 10px;
+  font-family: "Philosopher";
+  overflow-y: hidden;
+  overflow: scroll;
+  display: flex;
+}
+.breed-container::-webkit-scrollbar {
+  width: 0px;
 }

@@ -1,17 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Box } from "@chakra-ui/react";
 import DogoBreed from "../Components/DogoBreed";
 import "../Styles/Homepage.css";
-import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+import { Map, Marker, GoogleApiWrapper } from "google-maps-react";
+
 const Track = ({ google }) => {
-  const [selectBreed, setSelectBreed] = useState("");
-  const handleSelectedDogBreed = (newBreed) => {
-    setSelectBreed(newBreed);
+  const [selectedBreed, setSelectedBreed] = useState("");
+  const [coordinates, setCoordinates] = useState([]);
+
+  const trackCoordinates = (n) => {
+    const minLat = 8.0685;
+    const maxLat = 37.0902;
+    const minLng = 68.1097;
+    const maxLng = 97.4178;
+
+    let newCoordinates = [];
+
+    for (let i = 0; i < n; i++) {
+      let lat = Math.random() * (maxLat - minLat) + minLat;
+      let lng = Math.random() * (maxLng - minLng) + minLng;
+      newCoordinates.push({ lat: lat.toFixed(6), lng: lng.toFixed(6) });
+    }
+
+    setCoordinates(newCoordinates);
   };
+
+  useEffect(() => {
+    if (selectedBreed) {
+      const fetchCoordinates = async () => {
+        try {
+          let res = await fetch(
+            `https://dog.ceo/api/breed/${selectedBreed}/images/random/10`
+          );
+          res = await res.json();
+          trackCoordinates(10);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchCoordinates();
+    } else {
+      // reset coordinates if no breed is selected
+      setCoordinates([]);
+    }
+  }, [selectedBreed]);
+
+  const handleSelectedDogBreed = useCallback((breed) => {
+    setSelectedBreed(breed);
+  }, []);
 
   return (
     <>
-      <Box className="breed-container" box-shadow="md">
+      <Box className="breed-container" boxShadow="md">
         <DogoBreed handleSelectedDogBreed={handleSelectedDogBreed} />
       </Box>
 
@@ -20,16 +60,22 @@ const Track = ({ google }) => {
         style={{
           width: "70%",
           height: "400px",
-          borderRadius: "50px",
+          borderRadius: "20px",
           margin: "auto",
           marginTop: "40px",
           border: "5px solid gray",
         }}
         zoom={14}
       >
-        <Marker name={"Current location"} />
-
-        <InfoWindow></InfoWindow>
+        {coordinates.map((coords, index) => (
+          <Marker
+            key={index}
+            position={{
+              lat: parseFloat(coords.lat),
+              lng: parseFloat(coords.lng),
+            }}
+          />
+        ))}
       </Map>
     </>
   );

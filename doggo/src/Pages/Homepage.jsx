@@ -153,20 +153,20 @@ const Homepage = () => {
                 alt="dog"
               />
 
-              <div
+              <Box
                 style={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                <div onClick={() => handleClick(index)}>
+                <Box onClick={() => handleClick(index)}>
                   {likedImages.includes(index) ? "❤️" : "🤍"}
-                </div>
+                </Box>
                 <Text ml={2} fontWeight="bold">
                   {likeCounts[index]}
                 </Text>
-              </div>
+              </Box>
             </Box>
           ))}
         </div>

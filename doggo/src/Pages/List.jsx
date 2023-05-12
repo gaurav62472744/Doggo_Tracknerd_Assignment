@@ -92,7 +92,20 @@ const List = () => {
             marginTop={"30px"}
           >
             <Table variant="simple">
-              <TableCaption>Looks Like You Love {selectBreed}</TableCaption>
+              <TableCaption
+                fontFamily="Philosopher"
+                fontWeight={"bold"}
+                textAlign={"bottom"}
+                padding={"10px"}
+                backgroundColor={"#f5f5f5"}
+                color={"#333"}
+                borderRadius={"5px"}
+                boxShadow={" 0px 0px 5px rgba(0, 0, 0, 0.3)"}
+                fontSize={{ base: "14px", md: "xl" }}
+                w={{ base: "95%", md: "97%", lg: "100%" }}
+              >
+                Looks Like You Love {selectBreed}
+              </TableCaption>
               <Thead>
                 <Tr>
                   <Th
@@ -103,9 +116,10 @@ const List = () => {
                       display: "flex",
                       justifyContent: "space-between",
                     }}
+                    fontFamily="Philosopher"
                     rounded="3xl"
                     fontSize={{ base: "14px", md: "xl" }}
-                    w={{ base: "95%", md: "97%" }}
+                    w={{ base: "95%", md: "97%", lg: "100%" }}
                     px="20px"
                   >
                     SUB-BREED
@@ -120,18 +134,20 @@ const List = () => {
                       display="flex"
                       justifyContent="space-between"
                       key={index}
+                      fontFamily="Philosopher"
                     >
                       <Td fontSize={{ base: "md", md: "xl" }}>
                         Sub-Breed :
                         {subBreed.charAt(0).toUpperCase() + subBreed.slice(1)}
                       </Td>
                       <Td
+                        // ml={"50px"}
                         w={{ base: "35%", md: "18%" }}
                         cursor="pointer"
                         fontSize={{ base: "md", md: "xl" }}
                         onClick={() => handleDogList(image)}
                       >
-                        Link
+                        <Text _hover={{ fontSize: "2xl" }}>Link</Text>
                       </Td>
                     </Tr>
                   ))}
@@ -144,6 +160,7 @@ const List = () => {
                   m="auto"
                   mt="32px"
                   w={{ base: "100%", md: "50%" }}
+                  fontFamily="Philosopher"
                 >
                   No SubBreed Found Please try any other breed
                 </Text>

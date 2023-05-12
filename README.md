@@ -38,7 +38,7 @@
 
 <br />
 
-## Glimpses of Myntra - Clone 🙈 :
+## Glimpses of Doggo🙈 :
 
 
 <table>

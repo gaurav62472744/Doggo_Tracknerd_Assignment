@@ -18,13 +18,6 @@
     <br />&#10023;
     <a href="https://guileless-ganache-43fb12.netlify.app/">View Demo</a>   &#10023; 
   </h3>
- 
-  
-<!-- <img src="https://user-images.githubusercontent.com/110045725/214537767-9b50c791-e987-477f-97c4-072777a2b59f.png"  alt="mockup layout" height="470px" width="100%" /> -->
-
-
-<!--  
-  ![full-home-page](https://user-images.githubusercontent.com/110045725/214582124-593c99c9-f434-4301-8017-c3c292a98963.png) -->
 
 ## 🚀 Features
 1. Home
@@ -57,10 +50,6 @@
 <br />
 
 
-<!-- ## Demo
-
-[Check here to see the presentation video of this project](https://drive.google.com/file/d/1o6nQyCER_kjk7TDh5xZ2XzbbbjcYb0-9/view?usp=sharing) -->
-
 
 <br/>
 
@@ -87,26 +76,15 @@ Check that you have node and npm installed
 
 To check if you have Node.js installed, run this command in your terminal:
 
-
-
 node -v
-
 
 To confirm that you have npm installed you can run this command in your terminal:
 
-
-
 npm -v
-
-
 
 To install all the dependences of the project, run the following command:
 
-
-
 npm install  --force
-
-
 
 To run the application got to the client folder and run the following command:
 

@@ -17,13 +17,15 @@ import Loading from "../Components/Loader";
 import DogoBreed from "../Components/DogoBreed";
 
 const Homepage = () => {
-  const [count, setCount] = useState(0);
-  const [liked, setLiked] = useState(false);
   const [selectBreed, setSelectBreed] = useState("");
   const [dogImages, setDogImages] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedDogImage, setSelectedDogImage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [likedImages, setLikedImages] = useState([]);
+  const [likeCounts, setLikeCounts] = useState(
+    new Array(dogImages.length).fill(0)
+  );
 
   const selectedBreedDog = async () => {
     if (selectBreed) {
@@ -56,16 +58,6 @@ const Homepage = () => {
     selectedBreedDog();
   }, [selectBreed]);
 
-  const handleClick = (index) => {
-    if (liked) {
-      setCount(count + 1);
-      setLiked(true);
-    } else {
-      setCount(count - 1);
-      setLiked(false);
-    }
-  };
-
   const handleSelectedDogBreed = (newBreed) => {
     setSelectBreed(newBreed);
   };
@@ -78,6 +70,26 @@ const Homepage = () => {
   const handleModal = () => {
     setSelectedDogImage(null);
     setOpenModal(false);
+  };
+
+  // likes count
+
+  const handleClick = (index) => {
+    const newLikedImages = [...likedImages];
+    const newLikeCounts = [...likeCounts];
+
+    if (newLikedImages.includes(index)) {
+      newLikedImages.splice(newLikedImages.indexOf(index), 1);
+      newLikeCounts[index] =
+        typeof newLikeCounts[index] === "number" ? newLikeCounts[index] - 1 : 0;
+    } else {
+      newLikedImages.push(index);
+      newLikeCounts[index] =
+        typeof newLikeCounts[index] === "number" ? newLikeCounts[index] + 1 : 1;
+    }
+
+    setLikedImages(newLikedImages);
+    setLikeCounts(newLikeCounts);
   };
 
   return (
@@ -140,6 +152,7 @@ const Homepage = () => {
                 src={newImage}
                 alt="dog"
               />
+
               <div
                 style={{
                   display: "flex",
@@ -148,10 +161,10 @@ const Homepage = () => {
                 }}
               >
                 <div onClick={() => handleClick(index)}>
-                  {liked ? "❤️" : "🤍"}
+                  {likedImages.includes(index) ? "❤️" : "🤍"}
                 </div>
                 <Text ml={2} fontWeight="bold">
-                  {count}
+                  {likeCounts[index]}
                 </Text>
               </div>
             </Box>

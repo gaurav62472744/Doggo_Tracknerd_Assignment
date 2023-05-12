@@ -122,7 +122,7 @@ const List = () => {
                       key={index}
                     >
                       <Td fontSize={{ base: "md", md: "xl" }}>
-                        Sub-Breed
+                        Sub-Breed :
                         {subBreed.charAt(0).toUpperCase() + subBreed.slice(1)}
                       </Td>
                       <Td

@@ -3,6 +3,7 @@ import { Box } from "@chakra-ui/react";
 import DogoBreed from "../Components/DogoBreed";
 import "../Styles/Homepage.css";
 import { Map, Marker, GoogleApiWrapper } from "google-maps-react";
+import "../Styles/Track.css";
 
 const Track = ({ google }) => {
   const [selectedBreed, setSelectedBreed] = useState("");
@@ -50,34 +51,36 @@ const Track = ({ google }) => {
   }, []);
 
   return (
-    <>
+    <Box>
       <Box className="breed-container" boxShadow="md">
         <DogoBreed handleSelectedDogBreed={handleSelectedDogBreed} />
       </Box>
-
-      <Map
-        google={google}
-        style={{
-          width: "70%",
-          height: "400px",
-          borderRadius: "20px",
-          margin: "auto",
-          marginTop: "40px",
-          border: "5px solid gray",
-        }}
-        zoom={14}
-      >
-        {coordinates.map((coords, index) => (
-          <Marker
-            key={index}
-            position={{
-              lat: parseFloat(coords.lat),
-              lng: parseFloat(coords.lng),
-            }}
-          />
-        ))}
-      </Map>
-    </>
+      <Box>
+        <Map
+          google={google}
+          className="map"
+          style={{
+            width: "70%",
+            height: "380px",
+            borderRadius: "20px",
+            margin: "auto",
+            marginTop: "40px",
+            border: "5px solid gray",
+          }}
+          zoom={4}
+        >
+          {coordinates.map((coords, index) => (
+            <Marker
+              key={index}
+              position={{
+                lat: parseFloat(coords.lat),
+                lng: parseFloat(coords.lng),
+              }}
+            />
+          ))}
+        </Map>
+      </Box>
+    </Box>
   );
 };
 

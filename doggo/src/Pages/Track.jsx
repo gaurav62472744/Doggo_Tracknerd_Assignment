@@ -8,15 +8,6 @@ const Track = ({ google }) => {
   const handleSelectedDogBreed = (newBreed) => {
     setSelectBreed(newBreed);
   };
-  const style = {
-    width: "100%",
-    height: "100%",
-  };
-  const containerStyle = {
-    position: "relative",
-    width: "100%",
-    height: "100%",
-  };
 
   return (
     <>

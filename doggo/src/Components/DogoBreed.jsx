@@ -12,7 +12,6 @@ const DogoBreed = ({ handleSelectedDogBreed }) => {
       let res = await fetch("https://dog.ceo/api/breeds/list/all");
       res = await res.json();
       setBreeds(Object.keys(res.message));
-      console.log(res.message);
     } catch (error) {
       console.log(error);
     }
